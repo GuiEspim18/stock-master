@@ -1,7 +1,7 @@
 # Add the config.properties
-Add the config.properties in src/resources package.
-The content must be: 
+<p>Add the config.properties in src/resources package.</p>
+<p>The content must be: </p>
 
-  db.url = jdbc:postgresql://localhost:5432/your-data-base-path
-  db.user = your-user
-  db.password = your_password
+  <p>db.url = jdbc:postgresql://localhost:5432/your-data-base-path</p>
+  <p>db.user = your-user</p>
+  <p>db.password = your_password</p>
