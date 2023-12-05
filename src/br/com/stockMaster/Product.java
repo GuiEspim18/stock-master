@@ -2,20 +2,27 @@ package br.com.stockMaster;
 
 public class Product {
 
+    private int id;
     private String name;
     private double price;
     private String description;
     private int quantity;
 
-    public Product () {
-
-    }
 
     public Product (String name, double price, String description, int quantity) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.quantity = quantity;
+    }
+
+
+    public Product (String name, double price, String description, int quantity, int id) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.quantity = quantity;
+        this.id = id;
     }
 
     public String getName() {
@@ -48,5 +55,13 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -16,7 +16,7 @@ public interface ProductsDAO {
 
     void update(Product product, int id);
 
-    void delete(int id);
+    boolean delete(int id);
 
     List<Product> getAll();
 

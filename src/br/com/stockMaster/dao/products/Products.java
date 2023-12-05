@@ -69,29 +69,52 @@ public class Products implements ProductsDAO {
 
     @Override
     public Product getById(int id) {
+        Product product = null;
         try {
             this.verify();
+            this.connection = DBConnection.getConnection();
+            this.preparedStatement = this.connection.prepareStatement("SELECT * FROM public.PRODUCTS WHERE ID = ?");
+            this.preparedStatement.setInt(1, id);
+            this.rs = this.preparedStatement.executeQuery();
+            while (rs.next()) {
+                product = new Product(rs.getString("name"), rs.getDouble("price"), rs.getString("description"), rs.getInt("quantity"), rs.getInt("id"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+        return product;
     }
 
     @Override
     public void update(Product product, int id) {
         try {
             this.verify();
+            this.connection = DBConnection.getConnection();
+            this.preparedStatement = this.connection.prepareStatement("UPDATE public.PRODUCTS SET NAME = ?, DESCRIPTION = ?, PRICE = ?, QUANTITY = ? WHERE ID = ? ");
+            this.preparedStatement.setString(1, product.getName());
+            this.preparedStatement.setString(2, product.getDescription());
+            this.preparedStatement.setDouble(3, product.getPrice());
+            this.preparedStatement.setInt(4, product.getQuantity());
+            this.preparedStatement.setInt(5, id);
+            this.preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
         try {
             this.verify();
+            this.connection = DBConnection.getConnection();
+            this.preparedStatement = this.connection.prepareStatement("DELETE FROM public.PRODUCTS WHERE ID = ?");
+            this.preparedStatement.setInt(1, id);
+            this.preparedStatement.executeUpdate();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -104,7 +127,7 @@ public class Products implements ProductsDAO {
             this.preparedStatement = this.connection.prepareStatement("SELECT * FROM public.PRODUCTS");
             this.rs = this.preparedStatement.executeQuery();
             while (rs.next()) {
-                Product product = new Product(rs.getString("name"), rs.getDouble("price"), rs.getString("description"), rs.getInt("quantity"));
+                Product product = new Product(rs.getString("name"), rs.getDouble("price"), rs.getString("description"), rs.getInt("quantity"), rs.getInt("id"));
                 products.add(product);
             }
 
