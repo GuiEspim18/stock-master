@@ -2,16 +2,19 @@ package br.com.stockMaster;
 
 import br.com.stockMaster.dao.products.Products;
 import br.com.stockMaster.database.DBConnection;
+import br.com.stockMaster.exceptions.InvalidPriceException;
+import br.com.stockMaster.exceptions.InvalidStringException;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class StockMaster {
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
     private static final Products products = new Products();
 
     public static void main(String[] args) {
@@ -31,6 +34,7 @@ public class StockMaster {
 
             switch (choice) {
                 case 1:
+                    save();
                     break;
 
                 case 2:
@@ -50,7 +54,12 @@ public class StockMaster {
             }
         } catch (NumberFormatException e) {
             System.out.println("Digite um número válido!");
-            scanner.close();
+        } catch (InvalidStringException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidPriceException e) {
+            System.out.println(e.getMessage());
+        } finally {
+           scanner.close();
         }
     }
 
@@ -60,5 +69,41 @@ public class StockMaster {
             final String message = MessageFormat.format("{0} | R$: {1} | {2}", item.getName(), item.getPrice(), item.getDescription());
             System.out.println(message);
         }
+    }
+
+    private static void save() throws InvalidStringException, InvalidPriceException {
+        int quantity = 0;
+        double price = 0.0;
+        String description = null;
+        String name = null;
+        try {
+            System.out.println("Digite o nome do seu produto: ");
+            name = scanner.next();
+            if (name.isEmpty()) {
+                throw new InvalidStringException();
+            }
+            System.out.println("Digite uma descrição para o seu produto: ");
+            description = scanner.next();
+            if (description.isEmpty()) {
+                throw new InvalidStringException();
+            }
+            System.out.println("Digite um valor para o seu produto: ");
+            price = Float.parseFloat(scanner.next());
+            if (price == 0.0) {
+                throw new InvalidPriceException();
+            }
+            System.out.println("Digite a quantidade do produto: ");
+            quantity = Integer.parseInt(scanner.next());
+            if (quantity == 0) {
+                throw new InvalidPriceException();
+            }
+        } catch (Exception e) {
+
+        } finally {
+            Product product = new Product(name, price, description, quantity);
+            products.post(product);
+        }
+
+
     }
 }

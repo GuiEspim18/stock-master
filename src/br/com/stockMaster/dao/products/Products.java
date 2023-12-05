@@ -25,8 +25,9 @@ public class Products implements ProductsDAO {
                     "        CREATE TABLE products (\n" +
                     "            id SERIAL PRIMARY KEY,\n" +
                     "            name VARCHAR(255),\n" +
-                    "            price DECIMAL(10, 2),\n" +
-                    "            description TEXT\n" +
+                    "            price DOUBLE PRECISION,\n" +
+                    "            description TEXT,\n" +
+                    "            quantity INTEGER\n" +
                     "        );\n" +
                     "        RAISE NOTICE 'Table created';\n" +
                     "     END IF;\n" +
@@ -49,10 +50,20 @@ public class Products implements ProductsDAO {
 
     @Override
     public void post(Product product) {
+        this.verify();
         try {
-            this.verify();
+            this.connection = DBConnection.getConnection();
+            this.preparedStatement = this.connection.prepareStatement("INSERT INTO public.PRODUCTS (name, price, description, quantity) VALUES (?, ?, ?, ?);");
+            this.preparedStatement.setString(1, product.getName());
+            this.preparedStatement.setDouble(2, product.getPrice());
+            this.preparedStatement.setString(3, product.getDescription());
+            this.preparedStatement.setInt(4, product.getQuantity());
+            this.preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            this.closeConnections();
         }
     }
 
@@ -87,13 +98,13 @@ public class Products implements ProductsDAO {
     @Override
     public List<Product> getAll() {
         List<Product> products = new ArrayList<Product>();
+        this.verify();
         try {
-            this.verify();
             this.connection = DBConnection.getConnection();
             this.preparedStatement = this.connection.prepareStatement("SELECT * FROM public.PRODUCTS");
             this.rs = this.preparedStatement.executeQuery();
             while (rs.next()) {
-                Product product = new Product(rs.getString("name"), rs.getInt("price"), rs.getString("description"));
+                Product product = new Product(rs.getString("name"), rs.getDouble("price"), rs.getString("description"), rs.getInt("quantity"));
                 products.add(product);
             }
 

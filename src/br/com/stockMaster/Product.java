@@ -3,17 +3,19 @@ package br.com.stockMaster;
 public class Product {
 
     private String name;
-    private int price;
+    private double price;
     private String description;
+    private int quantity;
 
     public Product () {
 
     }
 
-    public Product (String name, int price, String descriptio) {
+    public Product (String name, double price, String description, int quantity) {
         this.name = name;
         this.price = price;
-        this.description = descriptio;
+        this.description = description;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -24,11 +26,11 @@ public class Product {
         this.name = name;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -38,5 +40,13 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
